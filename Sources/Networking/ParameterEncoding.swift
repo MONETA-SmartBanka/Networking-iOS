@@ -3,6 +3,7 @@ import Foundation
 
 public protocol ParametersEncoder {
     func encodeParameters(into request: URLRequest) throws -> URLRequest
+    var logDescription: String? { get }
 }
 
 public final class JSONBodyParameters<Parameters: Encodable>: ParametersEncoder {
@@ -21,6 +22,13 @@ public final class JSONBodyParameters<Parameters: Encodable>: ParametersEncoder 
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = body
         return request
+    }
+
+    public var logDescription: String? {
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.outputFormatting = .prettyPrinted
+        guard let jsonData = try? jsonEncoder.encode(parameters) else { return nil }
+        return String(decoding: jsonData, as: UTF8.self)
     }
 }
 
@@ -46,5 +54,9 @@ public final class URLQueryParameters: ParametersEncoder {
         request.url = components?.url
 
         return request
+    }
+
+    public var logDescription: String? {
+        parameters.map { "\($0.key) = \($0.value.description)" }.joined(separator: "\n")
     }
 }
