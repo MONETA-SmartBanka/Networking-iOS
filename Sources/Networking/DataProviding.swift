@@ -31,16 +31,20 @@ public final class MockSession: DataProviding {
     }
 
     public func publisher<R: Request>(for request: R, baseURL: URL) -> AnyPublisher<Output, Error> {
-        let request = try! request.urlRequest(baseURL: baseURL)
-        guard let response = session[request] else { fatalError() }
-        switch response {
-        case .success(let output):
-            return Just(output)
-                .setFailureType(to: Error.self)
-                .eraseToAnyPublisher()
-        case .failure(let error):
-            return Fail(outputType: Output.self, failure: error)
-                .eraseToAnyPublisher()
+        do {
+            let request = try request.urlRequest(baseURL: baseURL)
+            guard let response = session[request] else { fatalError() }
+            switch response {
+            case .success(let output):
+                return Just(output)
+                    .setFailureType(to: Error.self)
+                    .eraseToAnyPublisher()
+            case .failure(let error):
+                return Fail(outputType: Output.self, failure: error)
+                    .eraseToAnyPublisher()
+            }
+        } catch {
+            return Fail(error: error).eraseToAnyPublisher()
         }
     }
 }
