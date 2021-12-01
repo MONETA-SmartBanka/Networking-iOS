@@ -116,10 +116,10 @@ public final class ImageParameter: ParametersEncoder, MultipartEncoder {
     }
 }
 
-final class MultipartBodyParams: ParametersEncoder {
+public final class MultipartBodyParams: ParametersEncoder {
     let multiparts: [MultipartEncoder]
 
-    init(multiparts: [MultipartEncoder]) {
+    public init(multiparts: [MultipartEncoder]) {
         self.multiparts = multiparts
     }
 
