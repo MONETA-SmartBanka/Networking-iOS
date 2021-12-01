@@ -93,7 +93,7 @@ public final class ImageParameter: ParametersEncoder, MultipartEncoder {
 
     public func encodeParameters(into request: URLRequest) throws -> URLRequest {
         var request = request
-        request.addValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        request.addValue("image/jpeg", forHTTPHeaderField: "Content-Type")
         request.httpBody = image
         return request
     }
@@ -104,7 +104,7 @@ public final class ImageParameter: ParametersEncoder, MultipartEncoder {
         var data = Data()
         data.append(text: "Content-Disposition: form-data; name=\"\(multipartName)\"; filename=\"\(filename)\"")
         data.appendNewLine()
-        data.append(text: "Content-Type: application/octet-stream")
+        data.append(text: "Content-Type: image/jpeg")
         data.appendNewLine()
         data.appendNewLine()
         data.append(image)
