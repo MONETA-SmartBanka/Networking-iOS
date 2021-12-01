@@ -123,7 +123,7 @@ public final class MultipartBodyParams: ParametersEncoder {
         self.multiparts = multiparts
     }
 
-    func encodeParameters(into request: URLRequest) throws -> URLRequest {
+    public func encodeParameters(into request: URLRequest) throws -> URLRequest {
         var request = request
         let boundary = UUID().uuidString
         let delimiter = "--\(boundary)\r\n"
@@ -139,7 +139,7 @@ public final class MultipartBodyParams: ParametersEncoder {
         return request
     }
 
-    var logDescription: String? { nil }
+    public var logDescription: String? { nil }
 }
 
 public enum ParameterEncodingError: Error {
