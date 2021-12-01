@@ -134,6 +134,7 @@ public final class MultipartBodyParams: ParametersEncoder {
             data.append(try multipart.multipartEncode())
             data.appendNewLine()
         }
+        data.append(text: "--\(boundary)--\r\n")
         request.httpBody = data
 
         return request
