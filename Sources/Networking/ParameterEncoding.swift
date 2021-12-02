@@ -10,6 +10,41 @@ public protocol MultipartEncoder {
     func multipartEncode() throws -> Data
 }
 
+public final class PlainTextParameter: ParametersEncoder, MultipartEncoder {
+    let parameters: String
+    let multipartName: String?
+
+    public init(_ parameters: String, multipartName: String? = nil) {
+        self.parameters = parameters
+        self.multipartName = multipartName
+    }
+
+    public func encodeParameters(into request: URLRequest) throws -> URLRequest {
+        var request = request
+        let body = parameters
+        request.addValue("text/plain", forHTTPHeaderField: "Content-Type")
+        request.httpBody = body.data(using: .utf8)
+        return request
+    }
+
+    public func multipartEncode() throws -> Data {
+        guard let multipartName = multipartName
+        else { throw ParameterEncodingError.multipartNameMissing }
+        var data = Data()
+        data.append(text: "Content-Disposition: form-data; name=\"\(multipartName)\"")
+        data.appendNewLine()
+        data.append(text: "Content-Type: text/plain")
+        data.appendNewLine()
+        data.appendNewLine()
+        data.append(text: parameters)
+        return data
+    }
+
+    public var logDescription: String? {
+        parameters
+    }
+}
+
 public final class JSONBodyParameters<Parameters: Encodable>: ParametersEncoder, MultipartEncoder  {
     let parameters: Parameters
     let multipartName: String?
