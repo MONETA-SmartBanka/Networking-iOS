@@ -36,7 +36,8 @@ extension Request {
     public var customHeaders: [String: String]? { return nil }
 
     public func urlRequest(baseURL: URL) throws -> URLRequest {
-        guard let url = URL(string: path, relativeTo: baseURL), url.isValid else {
+        let url = baseURL.appendingPathComponent(path)
+        guard url.isValid else {
             throw URLError(.badURL)
         }
         var request = URLRequest(url: url)
