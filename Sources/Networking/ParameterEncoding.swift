@@ -51,7 +51,7 @@ public final class JSONBodyParameters<Parameters: Encodable>: ParametersEncoder,
 
     private let jsonEncoder: JSONEncoder
 
-    public init(_ parameters: Parameters, jsonEncoder: JSONEncoder = .init(), multipartName: String? = nil) {
+    public init(_ parameters: Parameters, jsonEncoder: JSONEncoder = .dateIso8601, multipartName: String? = nil) {
         self.parameters = parameters
         self.jsonEncoder = jsonEncoder
         self.multipartName = multipartName
@@ -79,11 +79,19 @@ public final class JSONBodyParameters<Parameters: Encodable>: ParametersEncoder,
     }
 
     public var logDescription: String? {
-        let jsonEncoder = JSONEncoder()
+        let jsonEncoder = JSONEncoder.dateIso8601
         jsonEncoder.outputFormatting = .prettyPrinted
         guard let jsonData = try? jsonEncoder.encode(parameters) else { return nil }
         return String(decoding: jsonData, as: UTF8.self)
     }
+}
+
+public extension JSONEncoder {
+    static let dateIso8601: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }()
 }
 
 public final class URLQueryParameters: ParametersEncoder {
